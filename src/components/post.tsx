@@ -11,17 +11,21 @@ type PostProps = {
   createdAt: string
 }
 export default function Post({ id, title, description, author, createdAt }: PostProps) {
+  function handlePress() {
+    router.push({ pathname: '/postDetails', params: { id } });
+  }
+
   return (
-    <View style={s.container}>
+    <TouchableOpacity onPress={handlePress} activeOpacity={0.5} style={s.container}>
       <View style={s.header}>
         {/* Info do usuário e data */}
         <View style={{ gap: 2 }}>
           <Text>{author}</Text>
           <Text>{formatDate(createdAt)}</Text>
         </View>
-        <TouchableOpacity onPress={() => router.push({ pathname: '/postDetails', params: { id } })}>
+        {/* <TouchableOpacity onPress={() => router.push({ pathname: '/postDetails', params: { id } })}>
           <Icon name="threeDotsHorizontal" width={32} height={32} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {/* Corpo do post */}
       <View>
@@ -30,7 +34,7 @@ export default function Post({ id, title, description, author, createdAt }: Post
           <Text numberOfLines={1} style={s.description}>{description}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 

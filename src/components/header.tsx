@@ -7,9 +7,10 @@ import { useAuth } from "@/contexts/authContext";
 type HeaderProps = {
   title?: string
   showBackButton?: boolean
+  headerRight?: React.ReactNode;
 }
-export default function Header({ title, showBackButton = false }: HeaderProps) {
-  const { signOut } = useAuth();
+export default function Header({ title, showBackButton = false, headerRight }: HeaderProps) {
+  const { user, signOut } = useAuth();
   const segments = useSegments()
   const currentRoute = segments[1]
 
@@ -29,18 +30,35 @@ export default function Header({ title, showBackButton = false }: HeaderProps) {
           )
         }
         <Text style={s.title}>{title || ""}</Text>
+        {user && user.role !== 'student' && headerRight && <View style={s.right}>{headerRight}</View>}
       </View>
       :
       <View>
         <View style={s.header}>
           <Text style={s.title}>Escola Desafio</Text>
           <View style={s.icons}>
-            <Pressable onPress={() => router.push('/newPost')}>
-              <Icon name="plus" />
-            </Pressable>
-            <Pressable onPress={handleSignout}>
-              <Icon name="home" />
-            </Pressable>
+            {user && user.role !== 'student' && (
+              <>
+                <Pressable onPress={() => router.push('/newPost')}>
+                  <Icon name="plus" />
+                </Pressable>
+
+                <Pressable onPress={() => router.push('/userList')}>
+                  <Icon name="userIcon" />
+                </Pressable>
+              </>
+            )}
+
+            {user ? (
+              <Pressable onPress={handleSignout}>
+                <Icon name="logoutIcon" />
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => router.push('/(auth)/login')}>
+                <Icon name="loginIcon" />
+              </Pressable>
+            )}
+
           </View>
         </View>
       </View>
@@ -76,5 +94,9 @@ const s = StyleSheet.create({
   BackButton: {
     position: 'absolute',
     left: 0
+  },
+  right: {
+    position: 'absolute',
+    right: 0,
   }
 })
