@@ -46,7 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(response.user);
       await SecureStore.setItemAsync('user', JSON.stringify(response.user));
       await SecureStore.setItemAsync('token', response.token);
-      router.replace('/(app)');
+      router.replace('/');
     }
   };
 
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
     await SecureStore.deleteItemAsync('user');
     await SecureStore.deleteItemAsync('token');
-    router.replace('/(auth)/login');
+    router.replace('/');
   };
 
   return (
