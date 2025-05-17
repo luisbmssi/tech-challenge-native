@@ -6,7 +6,8 @@
       "email": "admin@escola.com",
       "password": "123456",
       "role": "teacher",
-      "isAdmin": true
+      "isAdmin": true,
+      "modifiedAt": "2025-05-17T03:34:59.760Z"
     },
     {
       "id": "2",
@@ -22,7 +23,8 @@
       "email": "maria@escola.com",
       "password": "123456",
       "role": "teacher",
-      "isAdmin": false
+      "isAdmin": false,
+      "modifiedAt": "2025-05-17T03:27:13.410Z"
     },
     {
       "id": "4",
