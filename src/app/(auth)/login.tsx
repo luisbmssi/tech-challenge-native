@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { useAuth } from '@/contexts/authContext';
 
 function LoginScreen() {
@@ -7,8 +7,13 @@ function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleLogin() {
-    signIn(email, password);
+  async function handleLogin() {
+    try {
+      await signIn(email, password);
+    } catch (error: any) {
+      const message = error.message || 'Erro inesperado';
+      Alert.alert('Erro ao entrar', message);
+    }
   };
 
   return (

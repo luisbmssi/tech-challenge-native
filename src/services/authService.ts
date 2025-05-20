@@ -10,25 +10,25 @@ interface User {
 
 interface LoginResponse {
   user: User;
-  token: string;
+  access_token: string;
 }
 
-export async function loginService(email: string, password: string): Promise<LoginResponse | null> {
+export async function loginService(username: string, password: string): Promise<LoginResponse> {
   try {
-    const response = await api.get(`/users?email=${email}&password=${password}`);
+    const response = await api.post(`/auth/login`, { username, password }, {
+      headers: {
+        Authorization: `Bearer ${process.env.EXPO_PUBLIC_API_TOKEN}`,
+      },
+    });
 
-    const users = await response.data
+    return response.data
 
-    if (users.length > 0) {
-      const user = users[0];
-      // Simulando um token JWT
-      const token = 'mocked-jwt-token';
-      return { user, token };
+  } catch (error: any) {
+
+    if (error.response?.status === 401) {
+      throw new Error('Usuário ou senha inválidos');
     }
 
-    return null;
-  } catch (error) {
-    console.error('Login error:', error);
-    return null;
+    throw new Error('Erro ao realizar login. Tente novamente mais tarde.');
   }
 };

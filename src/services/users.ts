@@ -1,6 +1,5 @@
 import { User } from "@/types/user";
 import { api } from "./api";
-import uuid from 'react-native-uuid'
 
 export async function getUsers() {
   try {
@@ -28,13 +27,9 @@ export async function getUserById(id: string) {
   }
 }
 
-export async function createUser(data: { name: string, email: string, password: string, role: string }) {
+export async function createUser(data: { fullName: string, username: string, password: string, role: string }) {
   try {
-    const payload = {
-      ...data,
-      id: uuid.v4(),
-      createdAt: new Date().toISOString()
-    }
+    const payload = { ...data, isAdmin: false }
 
     const response = await api.post('/users', payload);
 
@@ -49,12 +44,9 @@ export async function createUser(data: { name: string, email: string, password: 
 
 export async function updateUser(id: string, data: Partial<User>) {
   try {
-    const payload = {
-      ...data,
-      modifiedAt: new Date().toISOString()
-    }
+    const payload = { ...data }
 
-    const response = await api.patch(`/users/${id}`, payload);
+    const response = await api.put(`/users/${id}`, payload);
 
     return response
 

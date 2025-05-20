@@ -1,9 +1,12 @@
 import { api } from "./api";
-import uuid from 'react-native-uuid'
 
 export async function getPosts() {
   try {
-    const response = await api.get("/posts");
+    const response = await api.get("/posts", {
+      headers: {
+        Authorization: `Bearer ${process.env.EXPO_PUBLIC_API_TOKEN}`,
+      },
+    });
 
     return response
 
@@ -16,7 +19,11 @@ export async function getPosts() {
 
 export async function getPostById(id: string) {
   try {
-    const response = await api.get(`/posts/${id}`);
+    const response = await api.get(`/posts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.EXPO_PUBLIC_API_TOKEN}`,
+      },
+    });
 
     return response
 
@@ -29,12 +36,7 @@ export async function getPostById(id: string) {
 
 export async function createPost(data: { title: string, description: string }) {
   try {
-    const payload = {
-      ...data,
-      id: uuid.v4(),
-      author: 'Professor João',
-      createdAt: new Date().toISOString()
-    }
+    const payload = { ...data }
 
     const response = await api.post('/posts', payload);
 
@@ -50,11 +52,10 @@ export async function createPost(data: { title: string, description: string }) {
 export async function updatePost(id: string, data: { title: string, description: string }) {
   try {
     const payload = {
-      ...data,
-      modifiedAt: new Date().toISOString()
+      ...data
     }
 
-    const response = await api.patch(`/posts/${id}`, payload);
+    const response = await api.put(`/posts/${id}`, payload);
 
     return response
 
@@ -70,6 +71,8 @@ export async function deletePost(id: string) {
     await api.delete(`/posts/${id}`);
 
   } catch (error) {
+    console.log(api.defaults.headers);
+
     console.error('Erro interno na API', error);
 
     throw new Error('Erro ao deletar post')

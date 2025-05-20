@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
 import { loginService } from '@/services/authService';
+import { api } from '@/services/api';
 
 interface User {
   id: string;
@@ -14,7 +15,7 @@ interface User {
 interface AuthContextData {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (username: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -32,28 +33,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     async function loadUser() {
       const storedUser = await SecureStore.getItemAsync('user');
-      if (storedUser) {
+      const storedToken = await SecureStore.getItemAsync('token');
+      if (storedUser && storedToken) {
         setUser(JSON.parse(storedUser));
+
+        api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
       }
       setLoading(false);
     };
     loadUser();
   }, []);
 
-  async function signIn(email: string, password: string) {
-    const response = await loginService(email, password);
-    if (response) {
-      setUser(response.user);
-      await SecureStore.setItemAsync('user', JSON.stringify(response.user));
-      await SecureStore.setItemAsync('token', response.token);
-      router.replace('/');
-    }
+  async function signIn(username: string, password: string) {
+    const response = await loginService(username, password);
+
+    setUser(response.user);
+
+    await SecureStore.setItemAsync('user', JSON.stringify(response.user));
+    await SecureStore.setItemAsync('token', response.access_token);
+
+    api.defaults.headers.common['Authorization'] = `Bearer ${response.access_token}`;
+    router.replace('/');
+
   };
 
   async function signOut() {
     setUser(null);
     await SecureStore.deleteItemAsync('user');
     await SecureStore.deleteItemAsync('token');
+
+    delete api.defaults.headers.common['Authorization'];
+
     router.replace('/');
   };
 
