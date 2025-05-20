@@ -86,7 +86,7 @@ export default function PostDetails() {
         {/* Linha Título e Data */}
         <View style={s.row}>
           <Text style={s.title}>{post.title}</Text>
-          <Text style={s.date}>{formatDate(post.createdAt)}</Text>
+          <Text style={s.date}>{formatDate(post.created_at)}</Text>
         </View>
 
         {/* Autor */}

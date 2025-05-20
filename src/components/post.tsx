@@ -1,4 +1,3 @@
-import Icon from "@/assets/icons";
 import { formatDate } from "@/utils/formatDate";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";

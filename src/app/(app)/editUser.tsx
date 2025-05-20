@@ -11,7 +11,7 @@ export default function EditUser() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  // const [username, setUserName] = useState('');
   const [role, setRole] = useState('student');
 
   useEffect(() => {
@@ -19,8 +19,8 @@ export default function EditUser() {
       try {
         const response = await getUserById(id);
         const user = response.data;
-        setName(user.name);
-        setEmail(user.email);
+        setName(user.fullName);
+        // setUserName(user.username);
         setRole(user.role);
       } catch (error) {
         Alert.alert('Erro', 'Não foi possível carregar o usuário');
@@ -32,7 +32,7 @@ export default function EditUser() {
 
   async function handleUpdate() {
     try {
-      const response = await updateUser(id, { name, email, role });
+      const response = await updateUser(id, { fullName: name, role });
 
       if (response.status === 200) {
         Alert.alert('Sucesso', 'Usuário atualizado com sucesso!');
@@ -47,7 +47,7 @@ export default function EditUser() {
     <View style={{ flex: 1, padding: 12 }}>
       <Header title="Editar Usuário" showBackButton />
       <TextInput style={s.input} placeholder="Nome" value={name} onChangeText={setName} />
-      <TextInput style={s.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
+      {/* <TextInput style={s.input} placeholder="Usuário" value={username} onChangeText={setUserName} /> */}
       <Picker selectedValue={role} onValueChange={(itemValue) => setRole(itemValue)} style={s.input}>
         <Picker.Item label="Aluno" value="student" />
         <Picker.Item label="Professor" value="teacher" />

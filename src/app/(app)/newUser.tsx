@@ -9,18 +9,18 @@ import { createUser } from "@/services/users";
 
 export default function NewUser() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('student');
 
   async function handleCreate() {
-    if (!name || !email || !password || !role) {
+    if (!name || !username || !password || !role) {
       Alert.alert('Erro', 'Preencha todos os campos');
       return;
     }
 
     try {
-      const response = await createUser({ name, email, password, role });
+      const response = await createUser({ fullName: name, username, password, role });
 
       if (response.status === 201 || response.status === 200) {
         Alert.alert('Sucesso', 'Usuário criado com sucesso!');
@@ -36,7 +36,7 @@ export default function NewUser() {
     <View style={{ flex: 1, padding: 12 }}>
       <Header title="Criar Usuário" showBackButton />
       <TextInput style={s.input} placeholder="Nome" value={name} onChangeText={setName} />
-      <TextInput style={s.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
+      <TextInput style={s.input} placeholder="Usuário" value={username} onChangeText={setUsername} />
       <TextInput style={s.input} placeholder="Senha" value={password} onChangeText={setPassword} secureTextEntry />
       <Picker selectedValue={role} onValueChange={(itemValue) => setRole(itemValue)} style={s.input}>
         <Picker.Item label="Aluno" value="student" />

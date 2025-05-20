@@ -7,8 +7,19 @@ import { deleteUser, getUsers } from "@/services/users";
 import Icon from "@/assets/icons";
 import { useIsFocused } from "@react-navigation/native";
 
+type User = {
+  _id: string;
+  fullName: string;
+  role: 'student' | 'teacher';
+};
+
+const roleMap: Record<'student' | 'teacher', string> = {
+  student: 'Aluno',
+  teacher: 'Professor',
+};
+
 export default function UserList() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const isFocused = useIsFocused();
 
@@ -16,6 +27,8 @@ export default function UserList() {
     try {
       const response = await getUsers();
       setUsers(response.data);
+
+
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível carregar os usuários');
     } finally {
@@ -67,21 +80,21 @@ export default function UserList() {
       <FlatList
         style={{ marginTop: 20 }}
         data={users}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View
             style={s.container}
           >
             <TouchableOpacity
-              onPress={() => router.push({ pathname: '/editUser', params: { id: item.id } })}
+              onPress={() => router.push({ pathname: '/editUser', params: { id: item._id } })}
               style={s.userCard}
             >
-              <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
-              <Text>{item.email}</Text>
-              <Text style={{ color: 'gray' }}>{item.role}</Text>
+              <Text style={{ fontWeight: 'bold' }}>{item.fullName}</Text>
+              {/* <Text>{item.username}</Text> */}
+              <Text style={{ color: 'gray' }}>{roleMap[item.role]}</Text>
             </TouchableOpacity>
             <Pressable
-              onPress={() => handleDeleteUser(item.id)}
+              onPress={() => handleDeleteUser(item._id)}
               style={{ marginLeft: 12 }}
             >
               <Icon name="trashIcon" />
